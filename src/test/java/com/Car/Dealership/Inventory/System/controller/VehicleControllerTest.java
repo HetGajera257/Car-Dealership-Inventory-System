@@ -252,4 +252,17 @@ class VehicleControllerTest {
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.message").value("Quantity to add must be positive"));
     }
+
+    // ─── No Resource Found Handler Test ──────────────────────────────────────
+
+    @Test
+    @WithMockUser(username = "user@example.com", roles = "USER")
+    void nonExistentEndpoint_ReturnsNotFoundDetails() throws Exception {
+        mockMvc.perform(get("/api/invalid-endpoint-url")
+                .with(csrf()))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("Resource not found: api/invalid-endpoint-url"));
+    }
 }
