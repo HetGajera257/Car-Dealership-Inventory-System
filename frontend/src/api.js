@@ -1,4 +1,8 @@
-const API_BASE = '/api';
+// In production (Vercel), VITE_API_URL = https://your-render-url.onrender.com
+// In development, falls back to /api (proxied to localhost:8080 by Vite)
+const API_BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api';
 
 // Helper to get auth header
 const getAuthHeader = () => {
