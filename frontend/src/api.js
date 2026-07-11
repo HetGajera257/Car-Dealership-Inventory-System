@@ -1,8 +1,8 @@
-// In production (Vercel), VITE_API_URL = https://your-render-url.onrender.com
-// In development, falls back to /api (proxied to localhost:8080 by Vite)
-const API_BASE = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL}/api`
-  : '/api';
+// Production: Render backend URL
+// Development: falls back to /api (proxied to localhost:8080 by Vite)
+const API_BASE = import.meta.env.DEV
+  ? '/api'
+  : 'https://car-dealership-inventory-system-hcxo.onrender.com/api';
 
 // Helper to get auth header
 const getAuthHeader = () => {
