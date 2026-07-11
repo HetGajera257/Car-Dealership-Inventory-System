@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -84,6 +85,22 @@ class AuthControllerTest {
         String fakeToken = "dummy-jwt-token-for-test@example.com";
 
         when(authService.login(anyString(), anyString())).thenReturn(fakeToken);
+
+        mockMvc.perform(post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").value(fakeToken));
+    }
+
+    @Test
+    void login_ValidUsernameCredentials_ReturnsOkWithToken() throws Exception {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setUsername("testuser");
+        loginRequest.setPassword("password123");
+        String fakeToken = "dummy-jwt-token-for-test@example.com";
+
+        when(authService.login(eq("testuser"), eq("password123"))).thenReturn(fakeToken);
 
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)

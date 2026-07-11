@@ -43,8 +43,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(String email, String password) {
-        User user = userRepository.findByEmail(email)
+    public String login(String emailOrUsername, String password) {
+        User user = userRepository.findByEmail(emailOrUsername)
+                .or(() -> userRepository.findByUsername(emailOrUsername))
                 .orElseThrow(InvalidCredentialsException::new);
 
         // Verify password using BCrypt
@@ -53,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Load Spring Security UserDetails and generate real JWT
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         return jwtUtil.generateToken(userDetails);
     }
 }

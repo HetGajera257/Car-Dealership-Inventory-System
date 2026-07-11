@@ -104,9 +104,28 @@ class AuthServiceImplTest {
     }
 
     @Test
+    void login_ValidUsernameCredentials_ReturnsToken() {
+        // Arrange
+        when(userRepository.findByEmail(testUser.getUsername())).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(testUser.getUsername())).thenReturn(Optional.of(testUser));
+        when(passwordEncoder.matches(any(CharSequence.class), anyString())).thenReturn(true);
+        UserDetails mockUserDetails = mock(UserDetails.class);
+        when(userDetailsService.loadUserByUsername(testUser.getEmail())).thenReturn(mockUserDetails);
+        when(jwtUtil.generateToken(mockUserDetails)).thenReturn("dummy-jwt-token");
+
+        // Act
+        String token = authService.login(testUser.getUsername(), testUser.getPassword());
+
+        // Assert
+        assertNotNull(token);
+        assertEquals("dummy-jwt-token", token);
+    }
+
+    @Test
     void login_InvalidEmail_ThrowsException() {
         // Arrange
         when(userRepository.findByEmail("wrong@example.com")).thenReturn(Optional.empty());
+        when(userRepository.findByUsername("wrong@example.com")).thenReturn(Optional.empty());
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.login("wrong@example.com", "password123"));

@@ -29,7 +29,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
-        String token = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
+        String identifier = loginRequest.getEmail();
+        if (identifier == null || identifier.trim().isEmpty()) {
+            identifier = loginRequest.getUsername();
+        }
+        String token = authService.login(identifier, loginRequest.getPassword());
         Map<String, String> response = new HashMap<>();
         response.put("token", token);
         return ResponseEntity.ok(response);
