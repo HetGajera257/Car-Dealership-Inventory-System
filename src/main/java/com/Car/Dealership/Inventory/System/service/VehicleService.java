@@ -2,7 +2,6 @@ package com.Car.Dealership.Inventory.System.service;
 
 import com.Car.Dealership.Inventory.System.entity.Vehicle;
 import com.Car.Dealership.Inventory.System.repository.VehicleRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,10 +10,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
+
+    public VehicleService(VehicleRepository vehicleRepository) {
+        this.vehicleRepository = vehicleRepository;
+    }
 
     public Vehicle addVehicle(Vehicle vehicle) {
         return vehicleRepository.save(vehicle);

@@ -29,13 +29,7 @@ class AuthServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        testUser = User.builder()
-                .id(1L)
-                .username("testuser")
-                .email("test@example.com")
-                .password("password123")
-                .role(Role.USER)
-                .build();
+        testUser = new User(1L, "testuser", "test@example.com", "password123", Role.USER);
     }
 
     @Test

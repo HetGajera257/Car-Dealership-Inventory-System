@@ -3,14 +3,16 @@ package com.Car.Dealership.Inventory.System.service.impl;
 import com.Car.Dealership.Inventory.System.entity.User;
 import com.Car.Dealership.Inventory.System.repository.UserRepository;
 import com.Car.Dealership.Inventory.System.service.AuthService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+
+    public AuthServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public User register(User user) {
