@@ -1,5 +1,6 @@
 package com.Car.Dealership.Inventory.System.service;
 
+import com.Car.Dealership.Inventory.System.entity.Category;
 import com.Car.Dealership.Inventory.System.entity.Vehicle;
 import com.Car.Dealership.Inventory.System.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,10 @@ public class VehicleService {
 
     public List<Vehicle> searchVehicles(String keyword) {
         return vehicleRepository.searchByKeyword(keyword);
+    }
+
+    public List<Vehicle> searchVehicles(String make, String model, Category category, BigDecimal minPrice, BigDecimal maxPrice) {
+        return vehicleRepository.searchVehicles(make, model, category, minPrice, maxPrice);
     }
 
     public List<Vehicle> searchVehiclesByPrice(BigDecimal minPrice, BigDecimal maxPrice) {

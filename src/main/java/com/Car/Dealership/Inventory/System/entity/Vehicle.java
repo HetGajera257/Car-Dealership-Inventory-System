@@ -18,8 +18,9 @@ public class Vehicle {
     @Column(nullable = false)
     private String model;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String category;
+    private Category category;
 
     @Column(nullable = false)
     private BigDecimal price;
@@ -29,7 +30,7 @@ public class Vehicle {
 
     public Vehicle() {}
 
-    public Vehicle(Long id, String make, String model, String category, BigDecimal price, Integer quantity) {
+    public Vehicle(Long id, String make, String model, Category category, BigDecimal price, Integer quantity) {
         this.id = id;
         this.make = make;
         this.model = model;
@@ -47,8 +48,8 @@ public class Vehicle {
     public String getModel() { return model; }
     public void setModel(String model) { this.model = model; }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
 
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal price) { this.price = price; }

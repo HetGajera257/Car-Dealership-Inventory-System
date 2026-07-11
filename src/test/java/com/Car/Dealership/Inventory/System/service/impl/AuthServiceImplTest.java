@@ -3,12 +3,16 @@ package com.Car.Dealership.Inventory.System.service.impl;
 import com.Car.Dealership.Inventory.System.entity.Role;
 import com.Car.Dealership.Inventory.System.entity.User;
 import com.Car.Dealership.Inventory.System.repository.UserRepository;
+import com.Car.Dealership.Inventory.System.util.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -21,6 +25,15 @@ class AuthServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private JwtUtil jwtUtil;
+
+    @Mock
+    private UserDetailsService userDetailsService;
 
     @InjectMocks
     private AuthServiceImpl authService;
@@ -37,6 +50,7 @@ class AuthServiceImplTest {
         // Arrange
         when(userRepository.findByEmail(testUser.getEmail())).thenReturn(Optional.empty());
         when(userRepository.findByUsername(testUser.getUsername())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("hashedPassword");
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
         // Act
@@ -45,6 +59,7 @@ class AuthServiceImplTest {
         // Assert
         assertNotNull(savedUser);
         assertEquals(testUser.getUsername(), savedUser.getUsername());
+        verify(passwordEncoder, times(1)).encode(any(CharSequence.class));
         verify(userRepository, times(1)).save(any(User.class));
     }
 
@@ -75,13 +90,17 @@ class AuthServiceImplTest {
     void login_ValidCredentials_ReturnsToken() {
         // Arrange
         when(userRepository.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
+        when(passwordEncoder.matches(any(CharSequence.class), anyString())).thenReturn(true);
+        UserDetails mockUserDetails = mock(UserDetails.class);
+        when(userDetailsService.loadUserByUsername(testUser.getEmail())).thenReturn(mockUserDetails);
+        when(jwtUtil.generateToken(mockUserDetails)).thenReturn("dummy-jwt-token");
 
         // Act
         String token = authService.login(testUser.getEmail(), testUser.getPassword());
 
         // Assert
         assertNotNull(token);
-        assertTrue(token.contains("dummy-jwt-token-for-" + testUser.getEmail()));
+        assertEquals("dummy-jwt-token", token);
     }
 
     @Test
@@ -98,6 +117,7 @@ class AuthServiceImplTest {
     void login_InvalidPassword_ThrowsException() {
         // Arrange
         when(userRepository.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
+        when(passwordEncoder.matches(any(CharSequence.class), anyString())).thenReturn(false);
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.login(testUser.getEmail(), "wrongpassword"));

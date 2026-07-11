@@ -3,8 +3,12 @@ package com.Car.Dealership.Inventory.System.controller;
 import com.Car.Dealership.Inventory.System.dto.LoginRequest;
 import com.Car.Dealership.Inventory.System.entity.Role;
 import com.Car.Dealership.Inventory.System.entity.User;
+import com.Car.Dealership.Inventory.System.filter.JwtAuthFilter;
 import com.Car.Dealership.Inventory.System.service.AuthService;
+import com.Car.Dealership.Inventory.System.util.JwtUtil;
+import com.Car.Dealership.Inventory.System.config.SecurityConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +23,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import org.springframework.context.annotation.Import;
+
 @WebMvcTest(AuthController.class)
+@Import({SecurityConfig.class, JwtAuthFilter.class})
 class AuthControllerTest {
 
     @Autowired
@@ -27,6 +34,12 @@ class AuthControllerTest {
 
     @MockBean
     private AuthService authService;
+
+    @MockBean
+    private UserDetailsService userDetailsService;
+
+    @MockBean
+    private JwtUtil jwtUtil;
 
     @Autowired
     private ObjectMapper objectMapper;
