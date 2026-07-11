@@ -2,6 +2,7 @@ package com.Car.Dealership.Inventory.System.controller;
 
 import com.Car.Dealership.Inventory.System.entity.Category;
 import com.Car.Dealership.Inventory.System.entity.Vehicle;
+import com.Car.Dealership.Inventory.System.dto.RestockRequest;
 import com.Car.Dealership.Inventory.System.service.VehicleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,8 +88,8 @@ public class VehicleController {
 
     @PostMapping("/{id}/restock")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Vehicle> restockVehicle(@PathVariable Long id, @RequestParam int quantity) {
-        Vehicle restockedVehicle = vehicleService.restockVehicle(id, quantity);
+    public ResponseEntity<Vehicle> restockVehicle(@PathVariable Long id, @RequestBody RestockRequest restockRequest) {
+        Vehicle restockedVehicle = vehicleService.restockVehicle(id, restockRequest.getQuantity());
         return ResponseEntity.ok(restockedVehicle);
     }
 }

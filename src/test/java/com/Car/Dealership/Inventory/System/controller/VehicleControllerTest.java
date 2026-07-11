@@ -4,6 +4,7 @@ import com.Car.Dealership.Inventory.System.entity.Category;
 import com.Car.Dealership.Inventory.System.entity.Vehicle;
 import com.Car.Dealership.Inventory.System.exception.OutOfStockException;
 import com.Car.Dealership.Inventory.System.exception.VehicleNotFoundException;
+import com.Car.Dealership.Inventory.System.dto.RestockRequest;
 import com.Car.Dealership.Inventory.System.filter.JwtAuthFilter;
 import com.Car.Dealership.Inventory.System.service.VehicleService;
 import com.Car.Dealership.Inventory.System.util.JwtUtil;
@@ -224,8 +225,11 @@ class VehicleControllerTest {
         Vehicle restockedVehicle = new Vehicle(1L, "Toyota", "Camry", Category.SEDAN, new BigDecimal("25000.00"), 15);
         when(vehicleService.restockVehicle(1L, 10)).thenReturn(restockedVehicle);
 
+        RestockRequest restockRequest = new RestockRequest(10);
+
         mockMvc.perform(post("/api/vehicles/1/restock")
-                .param("quantity", "10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(restockRequest))
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.quantity").value(15));
@@ -234,8 +238,11 @@ class VehicleControllerTest {
     @Test
     @WithMockUser(username = "user@example.com", roles = "USER")
     void restockVehicle_AsUser_ReturnsForbidden() throws Exception {
+        RestockRequest restockRequest = new RestockRequest(10);
+
         mockMvc.perform(post("/api/vehicles/1/restock")
-                .param("quantity", "10")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(restockRequest))
                 .with(csrf()))
                 .andExpect(status().isForbidden());
     }
@@ -245,8 +252,11 @@ class VehicleControllerTest {
     void restockVehicle_InvalidQuantity_ReturnsBadRequest() throws Exception {
         when(vehicleService.restockVehicle(1L, -5)).thenThrow(new IllegalArgumentException("Quantity to add must be positive"));
 
+        RestockRequest restockRequest = new RestockRequest(-5);
+
         mockMvc.perform(post("/api/vehicles/1/restock")
-                .param("quantity", "-5")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(restockRequest))
                 .with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
