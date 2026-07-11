@@ -22,26 +22,16 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
-        try {
-            User registeredUser = authService.register(user);
-            System.out.println("Registered user: " + registeredUser);
-            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        User registeredUser = authService.register(user);
+        System.out.println("Registered user: " + registeredUser);
+        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            String token = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
-            Map<String, String> response = new HashMap<>();
-            response.put("token", token);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-        }
+        String token = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        return ResponseEntity.ok(response);
     }
 }

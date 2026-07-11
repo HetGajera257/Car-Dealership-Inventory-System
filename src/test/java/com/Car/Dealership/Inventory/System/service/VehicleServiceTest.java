@@ -2,6 +2,8 @@ package com.Car.Dealership.Inventory.System.service;
 
 import com.Car.Dealership.Inventory.System.entity.Category;
 import com.Car.Dealership.Inventory.System.entity.Vehicle;
+import com.Car.Dealership.Inventory.System.exception.OutOfStockException;
+import com.Car.Dealership.Inventory.System.exception.VehicleNotFoundException;
 import com.Car.Dealership.Inventory.System.repository.VehicleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -155,12 +157,12 @@ class VehicleServiceTest {
     }
 
     @Test
-    @DisplayName("updateVehicle: throws RuntimeException when ID not found")
+    @DisplayName("updateVehicle: throws VehicleNotFoundException when ID not found")
     void updateVehicle_NotExists_ThrowsException() {
         when(vehicleRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> vehicleService.updateVehicle(99L, testVehicle))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(VehicleNotFoundException.class)
                 .hasMessageContaining("Vehicle not found with id: 99");
     }
 
@@ -178,12 +180,12 @@ class VehicleServiceTest {
     }
 
     @Test
-    @DisplayName("deleteVehicle: throws RuntimeException when ID not found")
+    @DisplayName("deleteVehicle: throws VehicleNotFoundException when ID not found")
     void deleteVehicle_NotExists_ThrowsException() {
         when(vehicleRepository.existsById(99L)).thenReturn(false);
 
         assertThatThrownBy(() -> vehicleService.deleteVehicle(99L))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(VehicleNotFoundException.class)
                 .hasMessageContaining("Vehicle not found with id: 99");
 
         verify(vehicleRepository, never()).deleteById(anyLong());
@@ -203,14 +205,14 @@ class VehicleServiceTest {
     }
 
     @Test
-    @DisplayName("purchaseVehicle: throws RuntimeException when out of stock")
+    @DisplayName("purchaseVehicle: throws OutOfStockException when out of stock")
     void purchaseVehicle_OutOfStock_ThrowsException() {
         testVehicle.setQuantity(0);
         when(vehicleRepository.findById(1L)).thenReturn(Optional.of(testVehicle));
 
         assertThatThrownBy(() -> vehicleService.purchaseVehicle(1L))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Vehicle is out of stock");
+                .isInstanceOf(OutOfStockException.class)
+                .hasMessageContaining("out of stock");
     }
 
     // ─── Restock Vehicle ──────────────────────────────────────────────────────

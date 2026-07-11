@@ -68,22 +68,27 @@ public class VehicleController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Vehicle> updateVehicle(@PathVariable Long id, @RequestBody Vehicle vehicleDetails) {
-        try {
-            Vehicle updatedVehicle = vehicleService.updateVehicle(id, vehicleDetails);
-            return ResponseEntity.ok(updatedVehicle);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        Vehicle updatedVehicle = vehicleService.updateVehicle(id, vehicleDetails);
+        return ResponseEntity.ok(updatedVehicle);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteVehicle(@PathVariable Long id) {
-        try {
-            vehicleService.deleteVehicle(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        vehicleService.deleteVehicle(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/purchase")
+    public ResponseEntity<Vehicle> purchaseVehicle(@PathVariable Long id) {
+        Vehicle purchasedVehicle = vehicleService.purchaseVehicle(id);
+        return ResponseEntity.ok(purchasedVehicle);
+    }
+
+    @PostMapping("/{id}/restock")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Vehicle> restockVehicle(@PathVariable Long id, @RequestParam int quantity) {
+        Vehicle restockedVehicle = vehicleService.restockVehicle(id, quantity);
+        return ResponseEntity.ok(restockedVehicle);
     }
 }

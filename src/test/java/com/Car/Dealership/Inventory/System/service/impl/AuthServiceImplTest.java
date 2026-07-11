@@ -70,7 +70,7 @@ class AuthServiceImplTest {
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.register(testUser));
-        assertEquals("Email already exists", exception.getMessage());
+        assertEquals("Email already exists: " + testUser.getEmail(), exception.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
 
@@ -82,7 +82,7 @@ class AuthServiceImplTest {
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.register(testUser));
-        assertEquals("Username already exists", exception.getMessage());
+        assertEquals("Username already exists: " + testUser.getUsername(), exception.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
 

@@ -3,6 +3,8 @@ package com.Car.Dealership.Inventory.System.controller;
 import com.Car.Dealership.Inventory.System.dto.LoginRequest;
 import com.Car.Dealership.Inventory.System.entity.Role;
 import com.Car.Dealership.Inventory.System.entity.User;
+import com.Car.Dealership.Inventory.System.exception.InvalidCredentialsException;
+import com.Car.Dealership.Inventory.System.exception.UserAlreadyExistsException;
 import com.Car.Dealership.Inventory.System.filter.JwtAuthFilter;
 import com.Car.Dealership.Inventory.System.service.AuthService;
 import com.Car.Dealership.Inventory.System.util.JwtUtil;
@@ -64,13 +66,16 @@ class AuthControllerTest {
     }
 
     @Test
-    void register_ExistingUser_ReturnsBadRequest() throws Exception {
-        when(authService.register(any(User.class))).thenThrow(new RuntimeException("Email already exists"));
+    void register_ExistingUser_ReturnsConflict() throws Exception {
+        when(authService.register(any(User.class)))
+                .thenThrow(new UserAlreadyExistsException("Email", "test@example.com"));
 
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(testUser)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.message").value("Email already exists: test@example.com"));
     }
 
     @Test
@@ -91,12 +96,13 @@ class AuthControllerTest {
     void login_InvalidCredentials_ReturnsUnauthorized() throws Exception {
         LoginRequest loginRequest = new LoginRequest("test@example.com", "wrongpassword");
 
-        when(authService.login(anyString(), anyString())).thenThrow(new RuntimeException("Invalid email or password"));
+        when(authService.login(anyString(), anyString())).thenThrow(new InvalidCredentialsException());
 
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.error").value("Invalid email or password"));
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.message").value("Invalid email or password"));
     }
 }

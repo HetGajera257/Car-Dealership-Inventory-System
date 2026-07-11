@@ -2,6 +2,8 @@ package com.Car.Dealership.Inventory.System.service;
 
 import com.Car.Dealership.Inventory.System.entity.Category;
 import com.Car.Dealership.Inventory.System.entity.Vehicle;
+import com.Car.Dealership.Inventory.System.exception.OutOfStockException;
+import com.Car.Dealership.Inventory.System.exception.VehicleNotFoundException;
 import com.Car.Dealership.Inventory.System.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,13 +54,13 @@ public class VehicleService {
             vehicle.setPrice(vehicleDetails.getPrice());
             vehicle.setQuantity(vehicleDetails.getQuantity());
             return vehicleRepository.save(vehicle);
-        }).orElseThrow(() -> new RuntimeException("Vehicle not found with id: " + id));
+        }).orElseThrow(() -> new VehicleNotFoundException(id));
     }
 
     @Transactional
     public void deleteVehicle(Long id) {
         if (!vehicleRepository.existsById(id)) {
-            throw new RuntimeException("Vehicle not found with id: " + id);
+            throw new VehicleNotFoundException(id);
         }
         vehicleRepository.deleteById(id);
     }
@@ -66,12 +68,12 @@ public class VehicleService {
     @Transactional
     public Vehicle purchaseVehicle(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found with id: " + id));
-        
+                .orElseThrow(() -> new VehicleNotFoundException(id));
+
         if (vehicle.getQuantity() <= 0) {
-            throw new RuntimeException("Vehicle is out of stock");
+            throw new OutOfStockException(id);
         }
-        
+
         vehicle.setQuantity(vehicle.getQuantity() - 1);
         return vehicleRepository.save(vehicle);
     }
@@ -82,8 +84,8 @@ public class VehicleService {
             throw new IllegalArgumentException("Quantity to add must be positive");
         }
         Vehicle vehicle = vehicleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found with id: " + id));
-        
+                .orElseThrow(() -> new VehicleNotFoundException(id));
+
         vehicle.setQuantity(vehicle.getQuantity() + quantityToAdd);
         return vehicleRepository.save(vehicle);
     }

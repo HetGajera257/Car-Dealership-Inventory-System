@@ -1,6 +1,8 @@
 package com.Car.Dealership.Inventory.System.service.impl;
 
 import com.Car.Dealership.Inventory.System.entity.User;
+import com.Car.Dealership.Inventory.System.exception.InvalidCredentialsException;
+import com.Car.Dealership.Inventory.System.exception.UserAlreadyExistsException;
 import com.Car.Dealership.Inventory.System.repository.UserRepository;
 import com.Car.Dealership.Inventory.System.service.AuthService;
 import com.Car.Dealership.Inventory.System.util.JwtUtil;
@@ -30,10 +32,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public User register(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new UserAlreadyExistsException("Email", user.getEmail());
         }
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already exists");
+            throw new UserAlreadyExistsException("Username", user.getUsername());
         }
         // Hash the password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -43,11 +45,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         // Verify password using BCrypt
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
+            throw new InvalidCredentialsException();
         }
 
         // Load Spring Security UserDetails and generate real JWT
