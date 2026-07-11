@@ -1,8 +1,5 @@
-// Production: Render backend URL
-// Development: falls back to /api (proxied to localhost:8080 by Vite)
-const API_BASE = import.meta.env.DEV
-  ? '/api'
-  : 'https://car-dealership-inventory-system-hcxo.onrender.com/api';
+// Both dev (Vite proxy) and production (Vercel proxy) forward /api/* to the backend
+const API_BASE = '/api';
 
 // Helper to get auth header
 const getAuthHeader = () => {
