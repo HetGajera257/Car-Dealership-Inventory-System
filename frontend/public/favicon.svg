@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#0F1E4A"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#1E3A8A"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Outer ring -->
+  <circle cx="32" cy="32" r="31" fill="url(#bg)" stroke="url(#ring)" stroke-width="1.5"/>
+
+  <!-- Speed streaks (left side) -->
+  <g filter="url(#glow)" opacity="0.8">
+    <line x1="5" y1="30" x2="14" y2="30" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="5" y1="34" x2="12" y2="34" stroke="#93C5FD" stroke-width="1" stroke-linecap="round"/>
+    <line x1="5" y1="27" x2="11" y2="27" stroke="#93C5FD" stroke-width="0.8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Car silhouette -->
+  <g filter="url(#glow)">
+    <!-- Car body -->
+    <path d="
+      M 12 35
+      L 14 28
+      L 20 24
+      L 27 22
+      L 38 22
+      L 44 26
+      L 50 29
+      L 52 32
+      L 52 37
+      L 46 37
+      Q 45 41 41 41
+      Q 37 41 36 37
+      L 26 37
+      Q 25 41 21 41
+      Q 17 41 16 37
+      L 12 37
+      Z
+    " fill="white" opacity="0.95"/>
+
+    <!-- Windshield -->
+    <path d="M 27 24 L 22 33 L 37 33 L 38 24 Z" fill="#BFDBFE" opacity="0.85"/>
+
+    <!-- Rear window -->
+    <path d="M 39 24 L 38.5 33 L 45 33 L 42 26 Z" fill="#BFDBFE" opacity="0.75"/>
+
+    <!-- Door line -->
+    <line x1="37" y1="24" x2="37" y2="36" stroke="#93C5FD" stroke-width="0.7" opacity="0.6"/>
+
+    <!-- Front wheel -->
+    <circle cx="42" cy="37" r="4.5" fill="#0F1E4A" stroke="white" stroke-width="1.5"/>
+    <circle cx="42" cy="37" r="2" fill="#93C5FD" opacity="0.7"/>
+
+    <!-- Rear wheel -->
+    <circle cx="20" cy="37" r="4.5" fill="#0F1E4A" stroke="white" stroke-width="1.5"/>
+    <circle cx="20" cy="37" r="2" fill="#93C5FD" opacity="0.7"/>
+
+    <!-- Headlight -->
+    <ellipse cx="51" cy="30" rx="2" ry="1.5" fill="#FDE68A" opacity="0.9"/>
+  </g>
+
+  <!-- Subtle ground shadow -->
+  <ellipse cx="32" cy="43" rx="20" ry="2" fill="#0F1E4A" opacity="0.4"/>
+</svg>
