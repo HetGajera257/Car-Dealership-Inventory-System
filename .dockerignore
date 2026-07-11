@@ -1,0 +1,9 @@
+# Docker ignore file - speeds up builds by not sending unnecessary files to Docker
+target/
+.git/
+.gitignore
+*.md
+frontend/
+.env
+.vscode/
+.mvn/wrapper/maven-wrapper.jar
