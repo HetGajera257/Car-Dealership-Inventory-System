@@ -432,8 +432,8 @@ Frontend runs at `http://localhost:5173`
 | View all vehicles | ✅ | ✅ |
 | Search vehicles | ✅ | ✅ |
 | Purchase a vehicle | ✅ | ✅ |
-| Add a vehicle | ✅ | ✅ |
-| Update a vehicle | ✅ | ✅ |
+| Add a vehicle | ❌ | ✅ |
+| Update a vehicle | ❌ | ✅ |
 | Delete a vehicle | ❌ | ✅ |
 | Restock a vehicle | ❌ | ✅ |
 
