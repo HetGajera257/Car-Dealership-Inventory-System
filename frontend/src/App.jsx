@@ -158,12 +158,17 @@ export default function App() {
   // Add/Update vehicle submit
   const handleVehicleFormSubmit = async (e) => {
     e.preventDefault();
+    const price = parseFloat(vehicleForm.price);
+    if (isNaN(price) || price < 100000) {
+      showToast('error', 'Price must be at least $100,000.');
+      return;
+    }
     try {
       const parsedData = {
         make: vehicleForm.make,
         model: vehicleForm.model,
         category: vehicleForm.category,
-        price: parseFloat(vehicleForm.price),
+        price: price,
         quantity: parseInt(vehicleForm.quantity, 10)
       };
 
@@ -787,16 +792,16 @@ function VehicleFormModal({ title, form, setForm, onSubmit, onClose }) {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-1">Price ($)</label>
+              <label className="block text-sm font-semibold text-slate-300 mb-1">Price ($) <span className="text-xs text-slate-400 font-normal">(min $100,000)</span></label>
               <input
                 type="number"
                 required
-                min="0"
+                min="100000"
                 step="0.01"
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: e.target.value })}
                 className="w-full px-3.5 py-2.5 bg-[#1f2937] border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                placeholder="0.00"
+                placeholder="100000.00"
               />
             </div>
           </div>
