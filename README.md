@@ -5,6 +5,16 @@ A full-stack car dealership inventory management application with role-based acc
 **🌐 Live Demo:** [https://car-dealership-inventory-system-eight.vercel.app](https://car-dealership-inventory-system-eight.vercel.app)
 
 ---
+## 👤 Default Admin Account
+
+On first server startup, an admin account is automatically seeded:
+
+| Field | Value |
+|---|---|
+| **Username** | `het` |
+| **Email** | `het@dealership.com` |
+| **Password** | '2572006@Het' |
+| **Role** | `ADMIN` |
 
 ## 📋 Table of Contents
 
@@ -429,16 +439,7 @@ Frontend runs at `http://localhost:5173`
 
 ---
 
-## 👤 Default Admin Account
 
-On first server startup, an admin account is automatically seeded:
-
-| Field | Value |
-|---|---|
-| **Username** | `het` |
-| **Email** | `het@dealership.com` |
-| **Password** | `2572006@Het` |
-| **Role** | `ADMIN` |
 
 ---
 
