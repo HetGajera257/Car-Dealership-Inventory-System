@@ -20,14 +20,19 @@ public class AdminSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (userRepository.findByEmail("admin@dealership.com").isEmpty()) {
+        // Remove old default admin if it still exists
+        userRepository.findByEmail("admin@dealership.com")
+                .ifPresent(userRepository::delete);
+
+        // Seed the new admin if not already present
+        if (userRepository.findByEmail("het@dealership.com").isEmpty()) {
             User admin = new User();
-            admin.setUsername("admin");
-            admin.setEmail("admin@dealership.com");
-            admin.setPassword(passwordEncoder.encode("adminpassword"));
+            admin.setUsername("het");
+            admin.setEmail("het@dealership.com");
+            admin.setPassword(passwordEncoder.encode("2572006@Het"));
             admin.setRole(Role.ADMIN);
             userRepository.save(admin);
-            System.out.println("Admin user seeded successfully with email: admin@dealership.com / password: adminpassword");
+            System.out.println("Admin user seeded: username=het | email=het@dealership.com");
         } else {
             System.out.println("Admin user already exists. Seeding skipped.");
         }
