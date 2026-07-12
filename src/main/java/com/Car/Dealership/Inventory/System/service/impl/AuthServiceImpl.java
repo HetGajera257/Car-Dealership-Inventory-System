@@ -34,9 +34,6 @@ public class AuthServiceImpl implements AuthService {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException("Email", user.getEmail());
         }
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new UserAlreadyExistsException("Username", user.getUsername());
-        }
         // Hash the password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
